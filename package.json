@@ -1,0 +1,24 @@
+{
+  "name": "automatic-video-break-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:dev": "nodemon worker.js",
+    "docker:prod": "node worker.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@videowiki/generators": "^1.3.0",
+    "amqplib": "^0.5.5",
+    "uuid": "^3.3.2",
+    "csvtojson": "^2.0.10"
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "nodemon": "^1.19.2"
+  }
+}
