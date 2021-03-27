@@ -6,13 +6,14 @@ const {
   formatSlides,
 } = require("../utils");
 const { queues } = require("../constants");
-const { AUTOMATIC_BREAK_VIDEO_FINISH_QUEUE } = queues;
+const { AUTOMATIC_BREAK_VIDEO_REQUEST_FINISH_QUEUE } = queues;
 
 const onAutoBreakVideo = (channel) => (msg) => {
-  const { videoUrl, articleId } = JSON.parse(msg.content.toString());
+  console.log('========================onAutoBreakVideo=========================');
+  const { url, id } = JSON.parse(msg.content.toString());
   let downloadedFilePath;
   let voiceActivityCsvFilePath;
-  return downloadFile(videoUrl)
+  return downloadFile(url)
     .then((p) => {
       downloadedFilePath = p;
       return detectVoiceActivity(downloadedFilePath);
@@ -25,20 +26,20 @@ const onAutoBreakVideo = (channel) => (msg) => {
       return convertCsvToJson(voiceActivityCsvFilePath);
     })
     .then((slides) => {
+      console.log('slides', slides);
       fs.unlink(voiceActivityCsvFilePath, (err) => {
         if (err) console.log("error deleting csv", err);
       });
-      return formatSlides(slides);
-    })
-    .then((formattedSlides) => {
-      channel.ack(msg);
+      const formattedSlides = formatSlides(slides);
       console.log(formattedSlides);
+      channel.ack(msg);
       channel.sendToQueue(
-        AUTOMATIC_BREAK_VIDEO_FINISH_QUEUE,
-        Buffer.from(JSON.stringify({ articleId, formattedSlides }))
+        AUTOMATIC_BREAK_VIDEO_REQUEST_FINISH_QUEUE,
+        Buffer.from(JSON.stringify({ id, formattedSlides }))
       );
     })
     .catch((err) => {
+      console.log('===================onAutoBreakVideo============================', err);
       fs.unlink(downloadedFilePath, (err) => {
         if (err) console.log("error deleting video", err);
       });
