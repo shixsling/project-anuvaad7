@@ -3,7 +3,7 @@ const RABBITMQ_SERVER = process.env.RABBITMQ_SERVER;
 const videowikiGenerators = require("@videowiki/generators");
 const rabbitmqService = require("./vendors/rabbitmq");
 const { queues } = require("./constants");
-const { AUTOMATIC_BREAK_VIDEO_REQUEST_QUEUE } = queues;
+const { AUTOMATIC_BREAK_VIDEO_REQUEST_QUEUE, AUTOMATIC_BREAK_VIDEO_REQUEST_FINISH_QUEUE } = queues;
 const onAutoBreakVideoHandler = require("./handlers/onAutoBreakVideo");
 
 let channel;
@@ -27,17 +27,10 @@ rabbitmqService.createChannel(RABBITMQ_SERVER, (err, ch) => {
   });
   server.listen(4000);
   channel.prefetch(1);
+  
   channel.assertQueue(AUTOMATIC_BREAK_VIDEO_REQUEST_QUEUE, { durable: true });
-  // channel.sendToQueue(
-  //   AUTOMATIC_BREAK_VIDEO_REQUEST_QUEUE,
-  //   Buffer.from(
-  //     JSON.stringify({
-  //       videoUrl:
-  //         "https://tailoredvideowiki.s3-eu-west-1.amazonaws.com/static/vocals.mp3",
-  //       articleId: "1",
-  //     })
-  //   )
-  // );
+  channel.assertQueue(AUTOMATIC_BREAK_VIDEO_REQUEST_FINISH_QUEUE, { durable: true });
+
   channel.consume(
     AUTOMATIC_BREAK_VIDEO_REQUEST_QUEUE,
     onAutoBreakVideoHandler(channel),
