@@ -8,7 +8,8 @@ RUN echo 'alias pip="pip3"' >> ~/.bashrc
 RUN echo 'alias python="python3"' >> ~/.bashrc
 
 # INSTALL tensorflow and inaSpeechSegmenter
-RUN python3 -m pip3 install --upgrade pip
+RUN pip --version
+RUN python3 -m pip install --upgrade pip3
 RUN pip3 install -q tensorflow==2.2
 RUN pip3 install -q inaSpeechSegmenter
 RUN pip3 install -q matplotlib==3.2  
