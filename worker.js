@@ -26,6 +26,7 @@ rabbitmqService.createChannel(RABBITMQ_SERVER, (err, ch) => {
     rabbitmqConnection: channel.connection,
   });
   server.listen(4000);
+  
   channel.prefetch(1);
   
   channel.assertQueue(AUTOMATIC_BREAK_VIDEO_REQUEST_QUEUE, { durable: true });
