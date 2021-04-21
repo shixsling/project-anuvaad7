@@ -1,4 +1,4 @@
-FROM hassanamin994/node_ffmpeg:6
+FROM anuvaadio/node_ffmpeg:6
 WORKDIR /automatic-video-break-service
 
 # INSTALL PIP3 and alias python/pip to python3/pip3
